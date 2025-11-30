@@ -20,6 +20,12 @@ LlamaForge is a professional-grade Graphical User Interface (GUI) for [llama.cpp
 *   **🛠️ Command Forge**: See the exact command being generated. Edit it manually before execution for total control.
 *   **⬇️ Built-in Downloader**: integrated access to HuggingFace for grabbing new models.
 
+---
+
+![LlamaForge Showcase](assets/Showcase.png)
+
+---
+
 ## 📦 Installation
 
 **No Python. No Dependencies. It just works.**
