@@ -1,6 +1,8 @@
 # LlamaForge 🛠️
 ### The Ultimate Command Center for Local LLMs
 
+![LlamaForge Banner](banner.png)
+
 ![LlamaForge Banner](https://img.shields.io/badge/Status-Release%20Candidate-orange?style=for-the-badge) ![Python](https://img.shields.io/badge/Made%20with-Python-blue?style=for-the-badge) ![Platform](https://img.shields.io/badge/Platform-Windows-blueviolet?style=for-the-badge)
 
 **Stop wrestling with command-line flags. Start forging intelligence.**
