@@ -638,11 +638,29 @@ def logs():
         logging.error(f"Error in logs: {e}")
         return "Internal Server Error", 500
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 def create_icon():
     try:
-        img = Image.open("icons/LlamaForge_32.png")
+        # Pystray works best with PIL Images from .ico or .png
+        # Try finding the .ico first (it has multiple sizes)
+        icon_path = resource_path("LlamaForge.ico")
+        if not os.path.exists(icon_path):
+             icon_path = resource_path("icons/LlamaForge_32.png")
+        
+        img = Image.open(icon_path)
         return img
-    except FileNotFoundError:
+    except Exception as e:
+        # Fallback to blue square + log error
+        logging.error(f"Failed to load icon: {e}")
         img = Image.new("RGB", (32, 32), color="blue")
         return img
 

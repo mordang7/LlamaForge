@@ -13,12 +13,12 @@ def create_ico(source_png, output_ico):
     print(f"Success: Created {output_ico} from {source_png}")
 
 if __name__ == "__main__":
-    # Try to find the best source
-    if os.path.exists("icon.png") and os.path.getsize("icon.png") > 10000:
+    # Use the 32x32 tray image as source (upscaling it)
+    if os.path.exists("icons/LlamaForge_32.png"):
+        create_ico("icons/LlamaForge_32.png", "LlamaForge.ico")
+        create_ico("icons/LlamaForge_32.png", "icons/LlamaForge.ico")
+    elif os.path.exists("icon.png"):
         create_ico("icon.png", "LlamaForge.ico")
         create_ico("icon.png", "icons/LlamaForge.ico")
-    elif os.path.exists("static/logo.png"):
-        create_ico("static/logo.png", "LlamaForge.ico")
-        create_ico("static/logo.png", "icons/LlamaForge.ico")
     else:
-        print("No suitable high-res icon source found in root or static/logo.png.")
+        print("No suitable icon source found.")
