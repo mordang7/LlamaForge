@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LlamaForge BETA V0.1a</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <img src="{{ url_for('static', filename='logo.png') }}" class="sidebar-logo" alt="LlamaForge Logo">
+    <div class="container">
+        <header>
+            <h1>LlamaForge <span class="version">BETA V0.1a</span></h1>
+            <button id="theme-toggle" class="icon-btn" title="Toggle Theme">🌙</button>
+        </header>
+
+        <!-- Model Selection -->
+        <section class="card">
+            <h2>Model Selection</h2>
+            <div class="form-group">
+                <label>Model Path</label>
+                <div class="scan-group">
+                    <input type="text" id="scan-path" placeholder="Model Directory">
+                    <button id="browse-folder" class="secondary-btn" title="Browse Folder">📂</button>
+                    <button id="scan-models" class="secondary-btn">Scan Folder</button>
+                </div>
+
+                <!-- Model Select & Delete Group -->
+                <div class="model-select-group" style="display: flex; gap: 8px; margin-top: 10px; align-items: center;">
+                    <select id="scanned-models" style="flex: 1; display:none;">
+                        <option value="">Select a model...</option>
+                    </select>
+                    <button id="delete-model-btn" class="danger-btn" title="Delete Selected Model"
+                        style="display:none;">DELETE</button>
+                    <button id="detect-runtime" class="icon-btn" title="Refresh Runtime">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2"
+                            fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 4v6h-6"></path>
+                            <path d="M1 20v-6h6"></path>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <input type="text" id="model-input" placeholder="Or paste full path to .gguf file"
+                    style="margin-top:10px;">
+
+                <!-- HuggingFace Download Instructions -->
+                <div class="info-box"
+                    style="margin-top: 10px; padding: 12px; background: var(--bg-secondary); border-left: 3px solid var(--primary-color); border-radius: 4px;">
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6;">
+                        💡 <strong>Tip:</strong> Paste a HuggingFace model link to auto-download:<br>
+                        <code
+                            style="background: var(--bg-color); padding: 2px 6px; border-radius: 3px; font-size: 13px;">-hf repo/model:filename</code><br>
+                        <span style="font-size: 13px; color: var(--text-secondary);">Example: <code
+                                style="background: var(--bg-color); padding: 2px 6px; border-radius: 3px;">-hf MaziyarPanahi/gemma-3-12b-it-GGUF:Q6_K</code></span><br>
+                        <span style="font-size: 12px; color: var(--text-secondary); font-style: italic;">The model will
+                            be downloaded when you start the server.</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Server Parameters -->
+        <section class="card">
+            <h2>Server Parameters</h2>
+
+            <!-- Basic Settings -->
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label>Server Path <span class="help-icon"
+                            data-tooltip="Full path to llama-server.exe. Click folder to browse.">?</span></label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="server-path" placeholder="Auto-detect" list="server-path-list"
+                            style="flex-grow: 1;">
+                        <button id="browse-server-btn" class="icon-btn" title="Browse for llama-server.exe">📂</button>
+                    </div>
+                    <datalist id="server-path-list"></datalist>
+                </div>
+                <div class="form-group">
+                    <label>Threads <span class="help-icon"
+                            data-tooltip="How many CPU cores to use. More is usually faster, but don't exceed your physical core count.">?</span></label>
+                    <input type="number" id="threads" value="8" list="threads-list">
+                    <datalist id="threads-list"></datalist>
+                </div>
+                <div class="form-group">
+                    <label>GPU Layers <span class="help-icon"
+                            data-tooltip="How much of the model to load into your graphics card. Higher is better for speed. Set to 0 for CPU only.">?</span></label>
+                    <input type="number" id="gpu-layers" value="50" list="gpu-layers-list">
+                    <datalist id="gpu-layers-list"></datalist>
+                </div>
+                <div class="form-group">
+                    <label>Memory Context <span class="help-icon"
+                            data-tooltip="The 'short-term memory' size of the AI. Higher values allow it to remember more conversation, but use more RAM.">?</span></label>
+                    <input type="number" id="ctx-size" value="4096" list="ctx-size-list">
+                    <datalist id="ctx-size-list"></datalist>
+                </div>
+                <div class="form-group">
+                    <label>Port</label>
+                    <input type="number" id="port" value="8080" list="port-list">
+                    <datalist id="port-list"></datalist>
+                </div>
+                <div class="form-group">
+                    <label>Host</label>
+                    <input type="text" id="host" value="127.0.0.1" list="host-list">
+                    <datalist id="host-list"></datalist>
+                </div>
+            </div>
+
+            <!-- Advanced Settings (Collapsible) -->
+            <div class="collapsible">
+                <div class="collapsible-header">Advanced Settings <span>▼</span></div>
+                <div class="collapsible-content">
+                    <div class="settings-grid">
+                        <div class="form-group">
+                            <label>Batch Size <span class="help-icon"
+                                    data-tooltip="How many tokens to process at once. Higher values can speed up prompt processing but use more memory.">?</span></label>
+                            <input type="number" id="batch-size" value="512">
+                        </div>
+                        <div class="form-group">
+                            <label>Parallel <span class="help-icon"
+                                    data-tooltip="How many requests to handle at the same time. Keep at 1 for personal use.">?</span></label>
+                            <input type="number" id="parallel" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Split Mode <span class="help-icon"
+                                    data-tooltip="How to split the model if using multiple GPUs. 'Layer' is usually best.">?</span></label>
+                            <select id="split-mode">
+                                <option value="layer" selected>Layer (Default)</option>
+                                <option value="row">Row</option>
+                                <option value="none">None</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cache Type K <span class="help-icon"
+                                    data-tooltip="Compression for Key cache. 'f16' is best quality, 'q4_0' saves memory but reduces quality.">?</span></label>
+                            <select id="cache-type-k">
+                                <option value="f16" selected>f16</option>
+                                <option value="q8_0">q8_0</option>
+                                <option value="q4_0">q4_0</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cache Type V <span class="help-icon"
+                                    data-tooltip="Compression for Value cache. 'f16' is best quality, 'q4_0' saves memory but reduces quality.">?</span></label>
+                            <select id="cache-type-v">
+                                <option value="f16" selected>f16</option>
+                                <option value="q8_0">q8_0</option>
+                                <option value="q4_0">q4_0</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>RoPE Freq Base <span class="help-icon"
+                                    data-tooltip="Advanced: Adjusts the base frequency for Rotary Positional Embeddings. Leave at 0 unless you know you need it.">?</span></label>
+                            <input type="number" id="rope-freq-base" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>RoPE Freq Scale <span class="help-icon"
+                                    data-tooltip="Advanced: Scales the frequency for Rotary Positional Embeddings. Leave at 0 unless you know you need it.">?</span></label>
+                            <input type="number" id="rope-freq-scale" value="0">
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="no-mmap"> No MMAP <span class="help-icon"
+                                data-tooltip="Load the entire model into RAM at start. Reduces disk usage during generation but takes longer to start up.">?</span></label>
+                        <label><input type="checkbox" id="mlock"> MLock <span class="help-icon"
+                                data-tooltip="Lock the model in memory to prevent it from being swapped to disk. Good for performance if you have plenty of RAM.">?</span></label>
+                        <label><input type="checkbox" id="flash-attn"> Flash Attention <span class="help-icon"
+                                data-tooltip="Optimization that speeds up processing and reduces memory usage. Recommended for most modern GPUs.">?</span></label>
+                        <label><input type="checkbox" id="jinja" checked> Jinja Template <span class="help-icon"
+                                data-tooltip="Use the chat template defined in the model file. Ensures the AI speaks in the correct format.">?</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sampling Settings (Collapsible) -->
+            <div class="collapsible">
+                <div class="collapsible-header">Sampling Settings <span>▼</span></div>
+                <div class="collapsible-content">
+                    <div class="settings-grid">
+                        <div class="form-group">
+                            <label>Temperature <span class="help-icon"
+                                    data-tooltip="Controls randomness. High (1.0) is creative/crazy, Low (0.1) is focused/deterministic.">?</span></label>
+                            <input type="number" id="temp" value="0.8" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Top K <span class="help-icon"
+                                    data-tooltip="Limits the AI to choosing from the top K most likely next words. Lower values make it more focused.">?</span></label>
+                            <input type="number" id="top-k" value="40">
+                        </div>
+                        <div class="form-group">
+                            <label>Top P <span class="help-icon"
+                                    data-tooltip="Limits the AI to the top cumulative probability P. Lower values make it more focused.">?</span></label>
+                            <input type="number" id="top-p" value="0.9" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Min P <span class="help-icon"
+                                    data-tooltip="Sets a minimum probability threshold for words to be considered.">?</span></label>
+                            <input type="number" id="min-p" value="0.05" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Repeat Penalty <span class="help-icon"
+                                    data-tooltip="Discourages the AI from repeating the same words or phrases. Higher values = less repetition.">?</span></label>
+                            <input type="number" id="repeat-penalty" value="1.1" step="0.1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Command Preview -->
+        <section class="card">
+            <div class="card-header">
+                <h2>Command Preview</h2>
+                <button id="edit-preview-btn" class="secondary-btn">Edit</button>
+            </div>
+            <div class="preview-box" id="command-preview">(Command will appear here)</div>
+            <textarea id="command-editor"
+                style="display: none; width: 100%; min-height: 100px; font-family: monospace; margin-top: 10px;"></textarea>
+
+            <div id="preview-actions" style="display: none; margin-top: 10px;">
+                <button id="discard-preview-btn" class="secondary-btn">Discard Changes</button>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 15px;">
+                <button id="load-model" class="primary-btn">Start Server</button>
+                <button id="unload-model" class="danger-btn" disabled>Stop Server</button>
+                <button id="open-browser-btn" class="secondary-btn" disabled>Open Web UI</button>
+            </div>
+        </section>
+
+        <!-- Runtime Status (Moved Below Command) -->
+        <section class="card" id="runtime-card">
+            <div class="card-header">
+                <h2>Runtime Status</h2>
+                <div class="runtime-controls" style="display: flex; align-items: center; gap: 10px;">
+                    <select id="backend-select" title="Preferred Backend">
+                        <option value="auto">Auto (Default)</option>
+                        <option value="cuda">CUDA (NVIDIA)</option>
+                        <option value="rocm">ROCm (AMD)</option>
+                        <option value="vulkan">Vulkan</option>
+                        <option value="metal">Metal (Apple)</option>
+                        <option value="sycl">SYCL (Intel)</option>
+                        <option value="cpu">CPU Only</option>
+                    </select>
+                    <button id="detect-runtime" class="icon-btn" title="Refresh Runtime">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2"
+                            fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 4v6h-6"></path>
+                            <path d="M1 20v-6h6"></path>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="runtime-list" class="status-grid">
+                <!-- Populated by JS -->
+                <div class="status-item loading">Detecting...</div>
+            </div>
+        </section>
+
+        <!-- Server Logs (Bottom) -->
+        <section class="card">
+            <div class="card-header" style="padding: 8px 15px;">
+                <h2 style="margin: 0; font-size: 18px;">Server Logs</h2>
+                <div class="log-controls" style="display: flex; align-items: center; gap: 15px;">
+                    <label style="display: flex; align-items: center; gap: 5px; margin: 0;"><input type="checkbox"
+                            id="auto-scroll" checked> Auto-scroll</label>
+                    <a href="#" id="clear-logs" style="color: #007bff; text-decoration: none;">Clear Logs</a>
+                </div>
+            </div>
+
+            <!-- Log Legend & Filters -->
+            <div class="log-legend">
+                <span class="legend-item error">Errors (Always On)</span>
+                <label class="legend-item warn"><input type="checkbox" id="show-warn" checked> Warnings</label>
+                <label class="legend-item token"><input type="checkbox" id="show-token" checked> Token Info</label>
+                <label class="legend-item system"><input type="checkbox" id="show-system" checked> System Info</label>
+            </div>
+
+            <div class="logs" id="logs"></div>
+        </section>
+    </div>
+
+    <div id="custom-tooltip" class="tooltip"></div>
+    <div id="custom-tooltip" class="tooltip"></div>
+
+    <script src="{{ url_for('static', filename='app.js') }}?v=0.1"></script>
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+WELCOME TO LLAMAFORGE (BETA V0.1a)
+================================
+
+Thank you for downloading LlamaForge!
+
+HOW TO USE:
+1. Double-click "LlamaForge_Beta_V0.1a.exe" to launch the application.
+2. The Web Interface will open automatically.
+   (If not, go to http://127.0.0.1:5000 in your browser).
+3. First Time Setup:
+   - Go to "Server Parameters".
+   - Click the Folder icon next to "Server Path".
+   - Select your "llama-server.exe" file.
+4. Select a Model:
+   - Browse to your models folder or paste a path.
+   - Click "Scan Folder".
+   - Select a model and click "Start Server".
+
+REQUIREMENTS:
+- Windows 10/11
+- "llama-server.exe" (from llama.cpp release)
+
+ENJOY!
