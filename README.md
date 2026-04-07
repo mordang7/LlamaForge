@@ -43,7 +43,7 @@ LlamaForge is a professional-grade Graphical User Interface (GUI) for [llama.cpp
 
 If LlamaForge has saved you time or helped you run your local AI setup, consider supporting the development!
 
-[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/paypalme/GeekJohn)
+[![Ko-Fi](https://img.shields.io/badge/Ko--Fi-Support%20Me-F16061?style=flat&logo=ko-fi&logoColor=white)](https://ko-fi.com/geekj)
 
 ---
 
